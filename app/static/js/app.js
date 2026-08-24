@@ -99,7 +99,7 @@
       const data = await res.json();
       el.healthIndicator.classList.add(data.openai_configured ? "ok" : "down");
       el.healthIndicator.title = data.openai_configured
-        ? "API healthy — OpenAI key configured"
+        ? "API healthy - OpenAI key configured"
         : "API running, but OPENAI_API_KEY is missing";
     } catch {
       el.healthIndicator.classList.add("down");
@@ -126,7 +126,8 @@
   function renderDocumentList() {
     el.documentList.innerHTML = "";
     if (state.documents.length === 0) {
-      el.documentList.innerHTML = '<li class="empty-state">No documents yet. Upload a PDF to get started.</li>';
+      el.documentList.innerHTML =
+        '<li class="empty-state">No documents yet. Upload a PDF to get started.</li>';
       return;
     }
     for (const doc of state.documents) {
@@ -166,7 +167,9 @@
   async function deleteDocument(id) {
     if (!confirm("Delete this document? This cannot be undone.")) return;
     try {
-      const res = await fetch(`${API_BASE}/api/documents/${id}`, { method: "DELETE" });
+      const res = await fetch(`${API_BASE}/api/documents/${id}`, {
+        method: "DELETE",
+      });
       if (!res.ok && res.status !== 204) throw new Error("Delete failed");
       toast("Document deleted.", "success");
       await refreshDocuments();
@@ -186,7 +189,10 @@
       const formData = new FormData();
       formData.append("file", file);
       try {
-        const res = await fetch(`${API_BASE}/api/documents`, { method: "POST", body: formData });
+        const res = await fetch(`${API_BASE}/api/documents`, {
+          method: "POST",
+          body: formData,
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || "Upload failed");
         toast(`${file.name} indexed successfully.`, "success");
@@ -220,12 +226,15 @@
   function renderConversationList() {
     el.conversationList.innerHTML = "";
     if (state.conversations.length === 0) {
-      el.conversationList.innerHTML = '<li class="empty-state">No conversations yet.</li>';
+      el.conversationList.innerHTML =
+        '<li class="empty-state">No conversations yet.</li>';
       return;
     }
     for (const conv of state.conversations) {
       const li = document.createElement("li");
-      li.className = "conversation-item" + (conv.id === state.conversationId ? " active" : "");
+      li.className =
+        "conversation-item" +
+        (conv.id === state.conversationId ? " active" : "");
       li.textContent = conv.title || "Untitled conversation";
       li.addEventListener("click", () => loadConversation(conv.id));
       el.conversationList.appendChild(li);
@@ -291,7 +300,7 @@
       block.innerHTML = sources
         .map(
           (s) =>
-            `<div class="source-chip"><b>${escapeHtml(s.document_name)}</b> — page ${s.page_number} (relevance ${(s.relevance_score * 100).toFixed(0)}%)</div>`
+            `<div class="source-chip"><b>${escapeHtml(s.document_name)}</b> - page ${s.page_number} (relevance ${(s.relevance_score * 100).toFixed(0)}%)</div>`,
         )
         .join("");
       bubble.appendChild(block);
@@ -376,7 +385,7 @@
             block.innerHTML = data.sources
               .map(
                 (s) =>
-                  `<div class="source-chip"><b>${escapeHtml(s.document_name)}</b> — page ${s.page_number} (relevance ${(s.relevance_score * 100).toFixed(0)}%)</div>`
+                  `<div class="source-chip"><b>${escapeHtml(s.document_name)}</b> - page ${s.page_number} (relevance ${(s.relevance_score * 100).toFixed(0)}%)</div>`,
               )
               .join("");
             bubble.appendChild(block);
@@ -389,7 +398,8 @@
       hljs.highlightAll();
       await refreshConversations();
       el.conversationTitle.textContent =
-        state.conversations.find((c) => c.id === state.conversationId)?.title || "Conversation";
+        state.conversations.find((c) => c.id === state.conversationId)?.title ||
+        "Conversation";
     } catch (err) {
       removeTypingIndicator();
       appendMessage("assistant", `⚠️ **Error:** ${err.message}`);

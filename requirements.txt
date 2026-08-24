@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# PDF-ChatGPT — production dependencies
+# PDF-ChatGPT - production dependencies
 # Pinned to compatible minimum versions to keep the environment reproducible
 # while allowing patch-level updates.
 # ---------------------------------------------------------------------------

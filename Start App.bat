@@ -3,9 +3,9 @@ setlocal EnableDelayedExpansion
 title PDF-ChatGPT Launcher
 color 0B
 
-echo ============================================================
-echo   PDF-ChatGPT - Enterprise RAG Application Launcher
-echo ============================================================
+echo ===============================================================================
+echo   PDF-ChatGPT - Enterprise RAG Application Launcher (Was made by Oleh Datsyk)
+echo ===============================================================================
 echo.
 
 REM ----------------------------------------------------------------

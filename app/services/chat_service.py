@@ -9,9 +9,9 @@ generate an answer.
 
 Two generation modes are supported:
 
-* :meth:`ChatService.stream_answer` — token-by-token streaming, used by the
+* :meth:`ChatService.stream_answer` - token-by-token streaming, used by the
   ``/api/chat/stream`` SSE endpoint for a responsive chat UI.
-* :meth:`ChatService.generate_structured_answer` — a single structured-output
+* :meth:`ChatService.generate_structured_answer` - a single structured-output
   call (``client.responses.parse``) that returns a JSON object validated
   against the :class:`StructuredAnswer` Pydantic schema, demonstrating
   constrained/structured generation.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# PDF-ChatGPT — macOS Launcher
+# PDF-ChatGPT - macOS Launcher
 # Double-click this file in Finder to install (first run) and start the app.
 # If macOS blocks it, right-click -> Open, or run:
 #   chmod +x "Start App (Mac).command"
@@ -15,9 +15,9 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 RESET='\033[0m'
 
-echo "============================================================"
-echo "  PDF-ChatGPT - Enterprise RAG Application Launcher"
-echo "============================================================"
+echo "==============================================================================="
+echo "  PDF-ChatGPT - Enterprise RAG Application Launcher (Was made by Oleh Datsyk)"
+echo "==============================================================================="
 echo ""
 
 fail() {

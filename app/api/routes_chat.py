@@ -3,11 +3,11 @@ Chat endpoints.
 
 Provides three ways to interact with the RAG pipeline:
 
-* ``POST /api/chat`` — synchronous structured JSON answer (demonstrates
+* ``POST /api/chat`` - synchronous structured JSON answer (demonstrates
   OpenAI Responses API structured output constrained to a Pydantic schema).
-* ``POST /api/chat/stream`` — Server-Sent Events streaming endpoint used by
+* ``POST /api/chat/stream`` - Server-Sent Events streaming endpoint used by
   the web UI for a token-by-token typing effect.
-* ``GET /api/conversations`` / ``GET /api/conversations/{id}`` — conversation
+* ``GET /api/conversations`` / ``GET /api/conversations/{id}`` - conversation
   history retrieval (conversation memory).
 """
 
