@@ -57,12 +57,30 @@ class VectorStoreService:
         if not self._index_exists():
             return None
         logger.info("Loading FAISS index from %s", self._index_path)
-        self._store = FAISS.load_local(
-            str(self._index_path),
-            self._embedding_service.client,
-            allow_dangerous_deserialization=True,
-        )
-        return self._store
+        try:
+            self._store = FAISS.load_local(
+                str(self._index_path),
+                self._embedding_service.client,
+                allow_dangerous_deserialization=True,
+            )
+            expected_dim = getattr(self._embedding_service, "dimension", None)
+            if expected_dim is not None and hasattr(self._store, "index") and self._store.index.d != expected_dim:
+                logger.warning(
+                    "FAISS index dimension (%d) does not match embedding dimension (%d). Safely resetting index.",
+                    self._store.index.d,
+                    expected_dim,
+                )
+                self._clear_index()
+                return None
+            return self._store
+        except Exception as exc:
+            logger.warning(
+                "Failed to load existing FAISS index (likely incompatible embedding dimensions or corrupt store): %s. "
+                "Safely resetting index.",
+                exc,
+            )
+            self._clear_index()
+            return None
 
     @staticmethod
     def _chunk_to_document(chunk: TextChunk) -> LCDocument:
@@ -94,13 +112,26 @@ class VectorStoreService:
                 self._store = FAISS.from_documents(documents, self._embedding_service.client)
             else:
                 logger.info("Adding %d chunks to existing FAISS index", len(documents))
-                existing.add_documents(documents)
-                self._store = existing
+                try:
+                    existing.add_documents(documents)
+                    self._store = existing
+                except Exception as exc:
+                    logger.warning(
+                        "Failed to add documents to existing index (dimension mismatch or corruption): %s. Recreating index.",
+                        exc,
+                    )
+                    self._clear_index()
+                    self._store = FAISS.from_documents(documents, self._embedding_service.client)
 
             self._index_path.mkdir(parents=True, exist_ok=True)
             self._store.save_local(str(self._index_path))
 
         return len(documents)
+
+    def reset_index(self) -> None:
+        """Safely clear and reset the vector store index."""
+        with self._lock:
+            self._clear_index()
 
     def similarity_search(
         self,

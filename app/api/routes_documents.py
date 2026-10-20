@@ -60,6 +60,12 @@ async def upload_document(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=exc.message
         ) from exc
+    except Exception as exc:
+        logger.exception("Unexpected error during document upload/ingestion")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred while processing the document.",
+        ) from exc
 
     return DocumentUploadResponse(document=DocumentResponse.model_validate(document))
 

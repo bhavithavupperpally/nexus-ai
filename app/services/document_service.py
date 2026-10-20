@@ -101,6 +101,19 @@ class DocumentService:
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("Ingestion failed for document %s", document_id)
+            # Ensure no partial vector store chunks remain for this document
+            try:
+                self._vector_store.delete_document(document_id)
+            except Exception:
+                logger.warning("Could not clean up vector store for failed document %s", document_id)
+
+            # Remove broken upload file from disk so it does not take up space
+            try:
+                if stored_path.exists():
+                    stored_path.unlink(missing_ok=True)
+            except Exception:
+                logger.warning("Could not remove disk file for failed document %s", document_id)
+
             self._repo.update_status(
                 document_id, DocumentStatus.FAILED, error_message=str(exc)
             )

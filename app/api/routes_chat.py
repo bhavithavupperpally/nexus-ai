@@ -20,7 +20,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 
 from app.api.deps import get_chat_service, get_memory_service
-from app.core.exceptions import MissingAPIKeyError, OpenAIServiceError, VectorStoreNotReadyError
+from app.core.exceptions import (
+    GeminiServiceError,
+    MissingAPIKeyError,
+    OpenAIServiceError,
+    VectorStoreNotReadyError,
+)
 from app.domain.models import MessageRole
 from app.domain.schemas import (
     ChatMessageResponse,
@@ -67,7 +72,7 @@ def chat(
         raise HTTPException(
             status_code=status.HTTP_412_PRECONDITION_FAILED, detail=exc.message
         ) from exc
-    except OpenAIServiceError as exc:
+    except (GeminiServiceError, OpenAIServiceError) as exc:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=exc.message) from exc
 
     memory_service.append_message(conversation.id, MessageRole.USER, request.question)
@@ -85,7 +90,7 @@ def chat(
     summary="Ask a question and stream the answer via Server-Sent Events",
     description=(
         "Streams the model's answer token-by-token as it is generated, using "
-        "the OpenAI Responses API streaming mode. The final SSE event contains "
+        "Gemini streaming mode. The final SSE event contains "
         "the resolved source citations."
     ),
 )
@@ -116,7 +121,7 @@ def chat_stream(
             for token in chat_service.stream_answer(request.question, contexts, history):
                 collected.append(token)
                 yield _sse_event("token", {"text": token})
-        except (OpenAIServiceError, MissingAPIKeyError) as exc:
+        except (GeminiServiceError, OpenAIServiceError, MissingAPIKeyError) as exc:
             yield _sse_event("error", {"detail": exc.message})
             return
 

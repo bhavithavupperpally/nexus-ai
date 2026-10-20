@@ -15,15 +15,17 @@ router = APIRouter(tags=["Health"])
     response_model=HealthResponse,
     summary="Application health check",
     description=(
-        "Returns basic liveness information, including whether an OpenAI API key is configured."
+        "Returns basic liveness information, including whether a Gemini API key is configured."
     ),
 )
 def health_check() -> HealthResponse:
     settings = get_settings()
+    configured = bool(settings.gemini_api_key or settings.openai_api_key)
     return HealthResponse(
         status="ok",
         app_name=settings.app_name,
         version=settings.app_version,
         environment=settings.app_env,
-        openai_configured=bool(settings.openai_api_key),
+        gemini_configured=configured,
+        openai_configured=configured,
     )

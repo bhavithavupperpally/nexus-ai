@@ -30,17 +30,23 @@ REM ----------------------------------------------------------------
 REM 2. Create virtual environment if missing
 REM ----------------------------------------------------------------
 echo [2/7] Checking for virtual environment...
-if not exist "venv\Scripts\activate.bat" (
+set VENV_ACTIVATE=""
+if exist ".venv\Scripts\activate.bat" (
+    set VENV_ACTIVATE=".venv\Scripts\activate.bat"
+    echo       Found virtual environment at .\.venv
+) else if exist "venv\Scripts\activate.bat" (
+    set VENV_ACTIVATE="venv\Scripts\activate.bat"
+    echo       Found virtual environment at .\venv
+) else (
     echo       No virtual environment found. Creating one now...
-    python -m venv venv
+    python -m venv .venv
     if errorlevel 1 (
         echo [ERROR] Failed to create the virtual environment.
         pause
         exit /b 1
     )
-    echo       Virtual environment created at .\venv
-) else (
-    echo       Virtual environment already exists.
+    set VENV_ACTIVATE=".venv\Scripts\activate.bat"
+    echo       Virtual environment created at .\.venv
 )
 echo.
 
@@ -48,7 +54,7 @@ REM ----------------------------------------------------------------
 REM 3. Activate virtual environment
 REM ----------------------------------------------------------------
 echo [3/7] Activating virtual environment...
-call venv\Scripts\activate.bat
+call %VENV_ACTIVATE%
 if errorlevel 1 (
     echo [ERROR] Failed to activate the virtual environment.
     pause
@@ -87,16 +93,17 @@ if not exist ".env" (
     echo.
     echo   ****************************************************************
     echo   *  IMPORTANT: Open the new .env file and set your             *
-    echo   *  OPENAI_API_KEY before using chat features.                 *
-    echo   *  Get a key at https://platform.openai.com/api-keys          *
+    echo   *  GEMINI_API_KEY before using chat features.                 *
+    echo   *  Get a free key at https://aistudio.google.com/app/apikey   *
     echo   ****************************************************************
     echo.
 ) else (
-    findstr /C:"OPENAI_API_KEY=sk-your-openai-api-key-here" .env >nul
+    findstr /C:"GEMINI_API_KEY=your-gemini-api-key-here" .env >nul
     if not errorlevel 1 (
         echo.
-        echo   [WARNING] OPENAI_API_KEY in .env still looks like the placeholder value.
+        echo   [WARNING] GEMINI_API_KEY in .env still looks like the placeholder value.
         echo   Chat and document indexing will fail until you set a real key.
+        echo   Get a free key at https://aistudio.google.com/app/apikey
         echo.
     ) else (
         echo       .env file found.

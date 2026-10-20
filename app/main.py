@@ -16,6 +16,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -41,9 +42,9 @@ async def lifespan(app: FastAPI):
         settings.app_env,
     )
     init_db()
-    if not settings.openai_api_key:
+    if not settings.api_key:
         logger.warning(
-            "OPENAI_API_KEY is not set. Chat and embedding features will be unavailable "
+            "GEMINI_API_KEY is not set. Chat and embedding features will be unavailable "
             "until it is configured in your .env file."
         )
     yield
@@ -55,15 +56,27 @@ def create_app() -> FastAPI:
         title=settings.app_name,
         description=(
             "An enterprise-grade Retrieval-Augmented Generation (RAG) API for chatting "
-            "with your PDF documents, built on FastAPI, LangChain, FAISS, and the "
-            "OpenAI Responses API."
+            "with your PDF documents, built on FastAPI, LangChain, FAISS, and Google Gemini."
         ),
         version=settings.app_version,
         lifespan=lifespan,
-        docs_url="/api/docs",
-        redoc_url="/api/redoc",
-        openapi_url="/api/openapi.json",
+        docs_url="/docs",
+        redoc_url="/redoc",
+        openapi_url="/openapi.json",
     )
+
+    # Maintain backward-compatible aliases for /api documentation paths
+    @application.get("/api/docs", include_in_schema=False)
+    async def swagger_ui_api_alias():
+        return get_swagger_ui_html(openapi_url="/openapi.json", title=f"{settings.app_name} - Swagger UI")
+
+    @application.get("/api/openapi.json", include_in_schema=False)
+    async def openapi_api_alias():
+        return JSONResponse(content=application.openapi())
+
+    @application.get("/api/redoc", include_in_schema=False)
+    async def redoc_api_alias():
+        return get_redoc_html(openapi_url="/openapi.json", title=f"{settings.app_name} - ReDoc")
 
     application.add_middleware(
         CORSMiddleware,

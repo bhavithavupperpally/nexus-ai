@@ -43,11 +43,20 @@ class ConversationNotFoundError(PDFChatGPTError):
     default_message = "The requested conversation was not found."
 
 
-class OpenAIServiceError(PDFChatGPTError):
-    default_message = "The AI service failed to generate a response."
+class GeminiServiceError(PDFChatGPTError):
+    default_message = "The Gemini AI service failed to generate a response."
+
+
+# Backward compatibility alias
+OpenAIServiceError = GeminiServiceError
 
 
 class MissingAPIKeyError(PDFChatGPTError):
     default_message = (
-        "OPENAI_API_KEY is not configured. Add it to your .env file to use this feature."
+        "GEMINI_API_KEY is not configured. Add it to your .env file to use this feature."
     )
+
+
+class EmbeddingServiceError(PDFChatGPTError):
+    default_message = "The embedding service failed to generate vector embeddings."
+

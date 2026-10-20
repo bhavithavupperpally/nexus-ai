@@ -85,7 +85,7 @@ class ChatMessageResponse(BaseModel):
 
 
 class StructuredAnswer(BaseModel):
-    """Schema enforced on the OpenAI Responses API structured output call."""
+    """Schema enforced on structured output calls."""
 
     answer_found: bool = Field(..., description="Whether the context contained an answer.")
     answer: str = Field(..., description="The final answer in Markdown, or an explanation.")
@@ -118,7 +118,8 @@ class HealthResponse(BaseModel):
     app_name: str
     version: str
     environment: str
-    openai_configured: bool
+    gemini_configured: bool = True
+    openai_configured: bool = True
 
 
 class ErrorResponse(BaseModel):

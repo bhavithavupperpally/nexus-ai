@@ -97,10 +97,11 @@
     try {
       const res = await fetch(`${API_BASE}/api/health`);
       const data = await res.json();
-      el.healthIndicator.classList.add(data.openai_configured ? "ok" : "down");
-      el.healthIndicator.title = data.openai_configured
-        ? "API healthy - OpenAI key configured"
-        : "API running, but OPENAI_API_KEY is missing";
+      const isConfigured = data.gemini_configured ?? data.openai_configured;
+      el.healthIndicator.classList.add(isConfigured ? "ok" : "down");
+      el.healthIndicator.title = isConfigured
+        ? "API healthy - Gemini API key configured"
+        : "API running, but GEMINI_API_KEY is missing";
     } catch {
       el.healthIndicator.classList.add("down");
       el.healthIndicator.title = "API unreachable";

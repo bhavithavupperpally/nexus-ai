@@ -44,8 +44,25 @@ class Settings(BaseSettings):
     cors_origins: str = Field(default="*", alias="CORS_ORIGINS")
 
     # ------------------------------------------------------------------
-    # OpenAI
+    # Embeddings (Local or Gemini)
     # ------------------------------------------------------------------
+    embedding_provider: str = Field(default="local", alias="EMBEDDING_PROVIDER")
+    local_embedding_model: str = Field(
+        default="sentence-transformers/all-MiniLM-L6-v2", alias="LOCAL_EMBEDDING_MODEL"
+    )
+
+    # ------------------------------------------------------------------
+    # Google Gemini
+    # ------------------------------------------------------------------
+    gemini_api_key: str = Field(default="", alias="GEMINI_API_KEY")
+    gemini_chat_model: str = Field(default="gemini-flash-lite-latest", alias="GEMINI_CHAT_MODEL")
+    gemini_embedding_model: str = Field(
+        default="gemini-embedding-001", alias="GEMINI_EMBEDDING_MODEL"
+    )
+    gemini_request_timeout: int = Field(default=60, alias="GEMINI_REQUEST_TIMEOUT")
+    gemini_max_output_tokens: int = Field(default=1024, alias="GEMINI_MAX_OUTPUT_TOKENS")
+
+    # Optional legacy OpenAI settings (kept for backwards compatibility)
     openai_api_key: str = Field(default="", alias="OPENAI_API_KEY")
     openai_chat_model: str = Field(default="gpt-4.1-mini", alias="OPENAI_CHAT_MODEL")
     openai_embedding_model: str = Field(
@@ -53,6 +70,11 @@ class Settings(BaseSettings):
     )
     openai_request_timeout: int = Field(default=60, alias="OPENAI_REQUEST_TIMEOUT")
     openai_max_output_tokens: int = Field(default=1024, alias="OPENAI_MAX_OUTPUT_TOKENS")
+
+    @property
+    def api_key(self) -> str:
+        """Return the active AI API key (Gemini prioritized, fallback to OpenAI)."""
+        return self.gemini_api_key or self.openai_api_key
 
     # ------------------------------------------------------------------
     # RAG / chunking

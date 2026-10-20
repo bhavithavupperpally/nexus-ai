@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF-ChatGPT | Enterprise Document Intelligence</title>
+    <title>Nexus AI | Chat with your documents</title>
     <meta
       name="description"
-      content="Chat with your PDF documents using Retrieval-Augmented Generation."
+      content="Nexus AI — Chat with your documents. Get answers grounded in your sources using Retrieval-Augmented Generation."
     />
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/static/css/style.css" />
@@ -27,7 +27,7 @@
         <div class="sidebar-header">
           <div class="brand">
             <img src="/static/favicon.svg" alt="" class="brand-icon" />
-            <span class="brand-name">PDF-ChatGPT</span>
+            <span class="brand-name">Nexus AI</span>
           </div>
           <button
             id="theme-toggle"
@@ -120,7 +120,7 @@
           <div>
             <h1 id="conversation-title">New Conversation</h1>
             <p class="chat-subtitle">
-              Ask questions grounded in your uploaded PDF documents.
+              Chat with your documents. Get answers grounded in your sources.
             </p>
           </div>
           <div class="scope-selector">
@@ -133,18 +133,22 @@
 
         <div id="chat-messages" class="chat-messages">
           <div class="welcome-card">
-            <h2>Welcome to PDF-ChatGPT</h2>
+            <div class="welcome-card-logo">
+              <img src="/static/favicon.svg" alt="Nexus AI logo" />
+              <span>Nexus AI</span>
+            </div>
+            <h2>Chat with your documents.</h2>
+            <p class="welcome-tagline">Get answers grounded in your sources.</p>
             <p>
               Upload one or more PDF documents, then ask questions in natural
               language. Answers are generated using Retrieval-Augmented
-              Generation (RAG) and always cite the source document and page.
+              Generation (RAG) and always cite the source document and page
+              number.
             </p>
             <ol>
               <li>Upload a PDF using the panel on the left.</li>
-              <li>
-                Wait for indexing to complete (chunking + embeddings + FAISS).
-              </li>
-              <li>Ask a question below - answers stream in real time.</li>
+              <li>Wait for indexing to complete (local embeddings + FAISS).</li>
+              <li>Ask a question below — answers stream in real time.</li>
             </ol>
           </div>
         </div>
